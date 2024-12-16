@@ -1,8 +1,5 @@
-// Used by index.ts for creating and accessing items stored in MySQL
-
 import * as dotenv from "dotenv";
-dotenv.config();
-dotenv.config({ path: `.env.local`, override: true });
+require('dotenv').config();  // Load the .env file
 
 import mysql from "mysql2/promise";
 import { logError, log, colour, validCategories } from "./utilities";
@@ -12,10 +9,10 @@ let connection: mysql.Connection;
 
 export async function establishMySQL() {
   const MYSQL_CONFIG = {
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DB_NAME,
+      host: process.env.MYSQL_HOST || 'localhost',
+      user: process.env.MYSQL_USER || 'root',
+      password: process.env.MYSQL_PASSWORD || '',
+      database: process.env.MYSQL_DATABASE || 'countdownprice'
   };
 
   try {
@@ -44,6 +41,10 @@ export async function establishMySQL() {
   }
 }
 
+function replaceUndefinedWithNull(params) {
+  return params.map(param => param === undefined ? null : param);
+}
+
 export async function upsertProductToMySQL(scrapedProduct: Product): Promise<UpsertResponse> {
   try {
     const selectQuery = "SELECT * FROM products WHERE id = ?";
@@ -67,19 +68,21 @@ export async function upsertProductToMySQL(scrapedProduct: Product): Promise<Ups
           lastUpdated = ?
         WHERE id = ?`;
 
-      await connection.execute(updateQuery, [
+      const safeParams = replaceUndefinedWithNull([
         response.product.name,
-        JSON.stringify(response.product.category),
+        response.product.category ? JSON.stringify(response.product.category) : null,
         response.product.sourceSite,
         response.product.size,
         response.product.unitPrice,
         response.product.unitName,
         response.product.originalUnitQuantity,
         response.product.currentPrice,
-        JSON.stringify(response.product.priceHistory),
+        response.product.priceHistory ? JSON.stringify(response.product.priceHistory) : null,
         response.product.lastUpdated,
         scrapedProduct.id,
       ]);
+
+      await connection.execute(updateQuery, safeParams);
 
       return response.upsertType;
     } else {
@@ -89,20 +92,22 @@ export async function upsertProductToMySQL(scrapedProduct: Product): Promise<Ups
           originalUnitQuantity, currentPrice, priceHistory, lastUpdated, lastChecked
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-      await connection.execute(insertQuery, [
+      const safeParams = replaceUndefinedWithNull([
         scrapedProduct.id,
         scrapedProduct.name,
-        JSON.stringify(scrapedProduct.category),
+        scrapedProduct.category ? JSON.stringify(scrapedProduct.category) : null,
         scrapedProduct.sourceSite,
         scrapedProduct.size,
         scrapedProduct.unitPrice,
         scrapedProduct.unitName,
         scrapedProduct.originalUnitQuantity,
         scrapedProduct.currentPrice,
-        JSON.stringify(scrapedProduct.priceHistory),
+        scrapedProduct.priceHistory ? JSON.stringify(scrapedProduct.priceHistory) : null,
         scrapedProduct.lastUpdated,
         scrapedProduct.lastChecked,
       ]);
+
+      await connection.execute(insertQuery, safeParams);
 
       console.log(
         `  New Product: ${scrapedProduct.name.slice(0, 47).padEnd(47)}` +
