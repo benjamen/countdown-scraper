@@ -9,6 +9,7 @@ Image files can also be scraped and placed into an Azure Storage Blob Container.
 ## Basic Setup
 
 With `NodeJS` installed, clone this repository, then run `npm install` to install dependencies.
+'npm install packages'
 
 Playwright must also be installed when running for the first time with `npx playwright install`.
 
