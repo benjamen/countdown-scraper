@@ -16,7 +16,8 @@
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "latest",
     "lodash": "^4.17.21",
-    "playwright": "^1.44.0"
+    "playwright": "^1.44.0",
+    "dotenv": "mysql2",
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
