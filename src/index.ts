@@ -7,7 +7,7 @@ import * as cheerio from "cheerio";
 import _ from "lodash";
 import { setTimeout } from "timers/promises";
 
-import { establishCosmosDB, upsertProductToCosmosDB } from "./cosmosdb.js";
+import { establishMySQL, upsertProductToMySQL } from "./mysql.js";
 import { productOverrides } from "./product-overrides.js";
 import { CategorisedUrl, DatedPrice, Product, UpsertResponse } from "./typings";
 import {
