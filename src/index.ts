@@ -37,8 +37,8 @@ export let uploadImagesMode = false;
 let headlessMode = true;
 categorisedUrls = await handleArguments(categorisedUrls);
 
-// Establish CosmosDB if being used
-if (databaseMode) establishCosmosDB();
+// Establish MySQL if being used
+if (databaseMode) establishMySQL();
 
 // Establish playwright browser
 let browser: playwright.Browser;
@@ -173,7 +173,7 @@ async function scrapeAllPageURLs() {
       if (databaseMode) {
         log(
           colour.blue,
-          `CosmosDB: ${perPageLogStats.newProducts} new products, ` +
+          `MySQL: ${perPageLogStats.newProducts} new products, ` +
           `${perPageLogStats.priceChanged} updated prices, ` +
           `${perPageLogStats.infoUpdated} updated info, ` +
           `${perPageLogStats.alreadyUpToDate} already up-to-date`
@@ -223,8 +223,8 @@ async function processFoundProductEntries
     );
 
     if (databaseMode && product !== undefined) {
-      // Insert or update item into azure cosmosdb
-      const response = await upsertProductToCosmosDB(product);
+      // Insert or update item into mySQL
+      const response = await upsertProductToMySQL(product);
 
       // Use response to update logging counters
       switch (response) {
