@@ -1,4 +1,3 @@
-
 import * as dotenv from "dotenv";
 require('dotenv').config();  // Load the .env file
 
@@ -6,8 +5,15 @@ import axios from 'axios';
 import { logError, log, colour, validCategories } from "./utilities";
 import { Product, UpsertResponse, ProductResponse } from "./typings";
 
-const FRAPPE_URL = 'http://besty.localhost:8000/api/resource/Product%20Item';
-const FRAPPE_AUTH = { headers: { Authorization: `token your-api-key` } };
+const FRAPPE_URL = process.env.FRAPPE_URL || 'http://besty.localhost:8000/api/resource/Product%20Item';
+const FRAPPE_API_KEY = process.env.FRAPPE_API_KEY || '4d8f1dd1fa0910a';
+const FRAPPE_API_SECRET = process.env.FRAPPE_API_SECRET || 'b429650f4233bde';
+
+const FRAPPE_AUTH = {
+  headers: {
+    Authorization: `token ${FRAPPE_API_KEY}:${FRAPPE_API_SECRET}`
+  }
+};
 
 export async function upsertProductToFrappe(scrapedProduct: Product): Promise<UpsertResponse> {
   try {
