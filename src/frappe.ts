@@ -1,6 +1,4 @@
-Here is a modified version of the `src/mysql.ts` file to integrate with Frappe instead of MySQL:
 
-```typescript
 import * as dotenv from "dotenv";
 require('dotenv').config();  // Load the .env file
 
@@ -8,7 +6,7 @@ import axios from 'axios';
 import { logError, log, colour, validCategories } from "./utilities";
 import { Product, UpsertResponse, ProductResponse } from "./typings";
 
-const FRAPPE_URL = 'https://your-frappe-instance/api/resource/Product Item';
+const FRAPPE_URL = 'http://besty.localhost:8000/api/resource/Product Item';
 const FRAPPE_AUTH = { headers: { Authorization: `token your-api-key` } };
 
 export async function upsertProductToFrappe(scrapedProduct: Product): Promise<UpsertResponse> {
@@ -129,6 +127,3 @@ export function logPriceChange(product: Product, newPrice: number) {
       newPrice
   );
 }
-```
-
-Make sure to replace `your-frappe-instance` and `your-api-key` with your actual Frappe instance URL and API key.
