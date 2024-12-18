@@ -6,7 +6,7 @@ import axios from 'axios';
 import { logError, log, colour, validCategories } from "./utilities";
 import { Product, UpsertResponse, ProductResponse } from "./typings";
 
-const FRAPPE_URL = 'http://besty.localhost:8000/api/resource/Product Item';
+const FRAPPE_URL = 'http://besty.localhost:8000/api/resource/Product%20Item';
 const FRAPPE_AUTH = { headers: { Authorization: `token your-api-key` } };
 
 export async function upsertProductToFrappe(scrapedProduct: Product): Promise<UpsertResponse> {
